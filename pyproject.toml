@@ -1,0 +1,11 @@
+[project]
+name = "recommendation-study"
+version = "0.1.0"
+description = "企業とニーズの推薦（レコメンデーション）システムの検証用プロトタイプ"
+readme = "README.md"
+requires-python = ">=3.12.12"
+dependencies = [
+    "pandas>=3.0.1",
+    "tensorboard>=2.20.0",
+    "tensorflow>=2.20.0",
+]
