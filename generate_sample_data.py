@@ -1,5 +1,6 @@
-from pathlib import Path
 import random
+from pathlib import Path
+
 import pandas as pd
 
 RAW_DATA_DIR = Path("./data/raw")
@@ -14,7 +15,7 @@ industries = [
     ("情報通信業", ["ソフトウェア", "AI開発", "インフラ構築", "システム運用"]),
     ("製造業", ["金属製品", "精密加工", "自動車部品", "食品加工"]),
     ("卸売業", ["産業機械", "電子部品", "建築資材", "アパレル"]),
-    ("サービス業", ["コンサルティング", "人材派遣", "広告代理店", "デザイン制作"])
+    ("サービス業", ["コンサルティング", "人材派遣", "広告代理店", "デザイン制作"]),
 ]
 
 company_features = [
@@ -23,7 +24,7 @@ company_features = [
     ("海外製品の輸入販売", "保守エンジニア不足"),
     ("独自技術あり", "資金不足"),
     ("若手が多い", "マネジメント層不足"),
-    ("老舗企業", "デジタル化の遅れ")
+    ("老舗企業", "デジタル化の遅れ"),
 ]
 
 companies_data = []
@@ -50,8 +51,26 @@ pd.DataFrame(
 ).to_csv(RAW_DATA_DIR / "companies.csv", index=False)
 
 # 2. Needs CSV
-needs_titles = ["パートナー開拓", "AI教育支援", "自動化の相談", "技術者募集", "システム刷新", "コスト削減提案", "新規事業開発", "マーケティング支援"]
-needs_details = ["代理店求む", "研修提供希望", "ロボット導入検討中", "保守パートナー求む", "レガシーシステムからの移行", "業務効率化のツール導入", "協業パートナー募集", "Web集客の強化"]
+needs_titles = [
+    "パートナー開拓",
+    "AI教育支援",
+    "自動化の相談",
+    "技術者募集",
+    "システム刷新",
+    "コスト削減提案",
+    "新規事業開発",
+    "マーケティング支援",
+]
+needs_details = [
+    "代理店求む",
+    "研修提供希望",
+    "ロボット導入検討中",
+    "保守パートナー求む",
+    "レガシーシステムからの移行",
+    "業務効率化のツール導入",
+    "協業パートナー募集",
+    "Web集客の強化",
+]
 
 needs_data = []
 for i in range(1, NUM_NEEDS + 1):
@@ -75,11 +94,11 @@ for _ in range(NUM_INTERACTIONS):
     need = random.choice(needs_data)
     t_n_id = need[0]
     t_c_id = need[1]
-    
+
     # ensure source isn't same as target
     if s_c_id == t_c_id:
         continue
-        
+
     e_type, weight = random.choice(event_types)
     interactions_data.append([s_c_id, t_n_id, t_c_id, e_type, weight])
 
@@ -94,4 +113,6 @@ pd.DataFrame(
     ],
 ).to_csv(RAW_DATA_DIR / "interactions.csv", index=False)
 
-print(f"{len(companies_data)}件の企業データ、{len(needs_data)}件のニーズデータ、{len(interactions_data)}件のインタラクションデータの作成が完了いたしましたわ。")
+print(
+    f"{len(companies_data)}件の企業データ、{len(needs_data)}件のニーズデータ、{len(interactions_data)}件のインタラクションデータの作成が完了いたしましたわ。"
+)

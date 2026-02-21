@@ -1,9 +1,8 @@
 from pathlib import Path
 
-import numpy as np
+import keras
 import pandas as pd
 import tensorflow as tf
-import keras
 
 RAW_DATA_DIR = Path("./data/raw")
 
@@ -74,7 +73,7 @@ class MatchingModel(keras.Model):
     def train_step(self, data):
         # Keras 3 の標準的な学習ステップのオーバーライド
         features = data
-        
+
         with tf.GradientTape() as tape:
             # 各タワーから特徴ベクトルを取得
             source_embeddings = self.source_model(features["source_id"])
@@ -83,19 +82,19 @@ class MatchingModel(keras.Model):
             # In-batch Negative Sampling:
             # [batch_size, emb_dim]と[emb_dim, batch_size]の内積をとり [batch_size, batch_size] のスコア行列を作る
             logits = tf.matmul(source_embeddings, target_embeddings, transpose_b=True)
-            
+
             # 対角成分が正例（あるsourceに対する正しいtarget）となる
             batch_size = tf.shape(logits)[0]
             labels = tf.range(batch_size)
-            
+
             # Sparse Categorical Crossentropyで最適化
             loss = keras.losses.sparse_categorical_crossentropy(
                 labels, logits, from_logits=True
             )
-            
+
             # バッチ全体の平均損失
             loss = tf.reduce_mean(loss)
-            
+
             # In-batch Accuracy (自身を正しくトップ1に当てられたか)
             predictions = tf.argmax(logits, axis=1, output_type=tf.int32)
             accuracy = tf.reduce_mean(tf.cast(predictions == labels, tf.float32))
@@ -103,7 +102,7 @@ class MatchingModel(keras.Model):
         # 勾配の計算と適用
         gradients = tape.gradient(loss, self.trainable_variables)
         self.optimizer.apply_gradients(zip(gradients, self.trainable_variables))
-        
+
         return {"loss": loss, "in_batch_accuracy": accuracy}
 
 
